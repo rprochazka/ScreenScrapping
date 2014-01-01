@@ -1,0 +1,26 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2012
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ScreenScrapping.Console", "ScreenScrapping.Console\ScreenScrapping.Console.csproj", "{9D028706-ACEC-4A04-AE6C-41B2B2FAE070}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ScreenScrapping.Engine", "ScreenScrapping.Engine\ScreenScrapping.Engine.csproj", "{E2B39A01-2CC9-4BFE-BEB0-D7BA644493F8}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{9D028706-ACEC-4A04-AE6C-41B2B2FAE070}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9D028706-ACEC-4A04-AE6C-41B2B2FAE070}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9D028706-ACEC-4A04-AE6C-41B2B2FAE070}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9D028706-ACEC-4A04-AE6C-41B2B2FAE070}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E2B39A01-2CC9-4BFE-BEB0-D7BA644493F8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E2B39A01-2CC9-4BFE-BEB0-D7BA644493F8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E2B39A01-2CC9-4BFE-BEB0-D7BA644493F8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E2B39A01-2CC9-4BFE-BEB0-D7BA644493F8}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

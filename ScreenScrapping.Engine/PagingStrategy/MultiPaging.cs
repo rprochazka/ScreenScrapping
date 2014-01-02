@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Web;
 using ScreenScrapping.Engine.HtmlParsers;
 
@@ -14,7 +15,7 @@ namespace ScreenScrapping.Engine.PagingStrategy
         {
             _visitedUrls = new List<string>();
 
-            _nextPageXPath = nextPageXPath;
+            _nextPageXPath = nextPageXPath;            
             CurrentPageUrl = initialUrl;
             AddToVisitedUrls(initialUrl);
         }
@@ -22,7 +23,7 @@ namespace ScreenScrapping.Engine.PagingStrategy
         public bool MoveNext(IHtmlParser parser)
         {
             var nextPageUrl = parser.EvaluateXPath(_nextPageXPath).FirstOrDefault();
-            if (!_visitedUrls.Contains(nextPageUrl))
+            if (!string.IsNullOrEmpty(nextPageUrl) && !_visitedUrls.Contains(nextPageUrl))
             {
                 AddToVisitedUrls(nextPageUrl);
                 CurrentPageUrl = nextPageUrl;

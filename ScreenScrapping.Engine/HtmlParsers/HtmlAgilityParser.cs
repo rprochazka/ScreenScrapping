@@ -26,16 +26,26 @@ namespace ScreenScrapping.Engine.HtmlParsers
             {
                 return EvaluateXPath(xpath, attributeName);
             }
-            return _doc.DocumentNode.SelectNodes(xpath).Select(n => n.InnerText);
+
+            var matchedNodes = _doc.DocumentNode.SelectNodes(xpath);
+            
+            return 
+                null != matchedNodes 
+                    ? matchedNodes.Select(n => n.InnerText) 
+                    : new List<string>();
         }
 
         private IEnumerable<string> EvaluateXPath(string xpath, string attributeName)
         {
-            return
-                _doc.DocumentNode
-                        .SelectNodes(xpath)
+            var matchedNodes = _doc.DocumentNode.SelectNodes(xpath);
+            if (null != matchedNodes)
+            {
+                return matchedNodes
                         .Select(n => n.GetAttributeValue(attributeName, null))
                         .Where(n => !string.IsNullOrEmpty(n));
+            }
+
+            return new List<string>();
 
         }
 

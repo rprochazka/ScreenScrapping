@@ -16,12 +16,15 @@ namespace ScreenScrapping.Console
                                                {"jobTitle", "//h2[@id='g2d-name']"},
                                                {"jobDesc", "//div[@id='g2-desc']/p"}
                                            };
-
-            //var scrappedFields = GetScrappedFields(jobDetailUrl, jobDetailFieldsXPath);
-            //DisplayInConsole(scrappedFields);
-
+            
             var detailLinks = GetDetailLinks(jobListUrl, jobDetailLinkUrlXPath, nextPageUrlXPath);
-            DisplayInConsole(detailLinks);
+            //DisplayInConsole(detailLinks);
+
+            foreach (var detailLink in detailLinks)
+            {
+                var scrappedFields = GetScrappedFields(detailLink, jobDetailFieldsXPath);
+                DisplayInConsole(scrappedFields);
+            }
         }
 
         static IEnumerable<string> GetDetailLinks(string initialUrl, string detailLinkUrlXPath, string nextPageUrlXPath)

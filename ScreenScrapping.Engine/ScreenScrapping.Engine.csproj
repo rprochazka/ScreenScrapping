@@ -46,6 +46,7 @@
     <Compile Include="EngineManager.cs" />
     <Compile Include="HtmlParsers\HtmlAgilityParser.cs" />
     <Compile Include="HtmlParsers\IHtmlParser.cs" />
+    <Compile Include="HtmlParsers\XPathNavigatorParser.cs" />
     <Compile Include="IEngineManager.cs" />
     <Compile Include="PagingStrategy\IPagingStrategy.cs" />
     <Compile Include="PagingStrategy\MultiPaging.cs" />

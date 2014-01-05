@@ -6,8 +6,7 @@ namespace ScreenScrapping.Console
     {
         static void Main(string[] args)
         {
-            const string jobListUrl = "http://www.jobs.cz/search/?section=positions&srch%5Bq%5D=.net&srch%5Blocality%5D%5Bname%5D=Praha&srch%5Blocality%5D%5Bcoords%5D=&srch%5Blocality%5D%5Bcode%5D=R200000&srch%5BminimalSalary%5D=&srch%5BcompanyField%5D=&srch%5BemploymentType%5D=&srch%5BworkStatus%5D=&srch%5Bcontract%5D=&srch%5Bozp%5D=";
-            const string jobDetailUrl = "http://www.jobs.cz/pd/726894616/?rps=233&section=positions";
+            const string jobListUrl = "http://www.jobs.cz/search/?section=positions&srch%5Bq%5D=.net&srch%5Blocality%5D%5Bname%5D=Praha&srch%5Blocality%5D%5Bcoords%5D=&srch%5Blocality%5D%5Bcode%5D=R200000&srch%5BminimalSalary%5D=&srch%5BcompanyField%5D=&srch%5BemploymentType%5D=&srch%5BworkStatus%5D=&srch%5Bcontract%5D=&srch%5Bozp%5D=";            
             const string jobDetailLinkUrlXPath = "//div[@id='joblist']//div[@class='list']//h3/a/@href";
             const string nextPageUrlXPath = "//div[@id='pager']/span[@class='next']/a/@href";
 
@@ -23,7 +22,7 @@ namespace ScreenScrapping.Console
             foreach (var detailLink in detailLinks)
             {
                 var scrappedFields = GetScrappedFields(detailLink, jobDetailFieldsXPath);
-                DisplayInConsole(scrappedFields);
+                DisplayInConsole(detailLink, scrappedFields);
             }
         }
 
@@ -47,6 +46,18 @@ namespace ScreenScrapping.Console
                 System.Console.WriteLine(string.Concat(item.Key, ": ", item.Value));
             }
 
+            System.Console.ReadLine();
+        }
+
+        static void DisplayInConsole(string url, Dictionary<string, string> result)
+        {
+            System.Console.WriteLine("Results:");
+            System.Console.WriteLine(url);
+            foreach (var item in result)
+            {                
+                System.Console.WriteLine(string.Concat(item.Key, ": ", item.Value));                
+            }
+            System.Console.WriteLine();
             System.Console.ReadLine();
         }
 

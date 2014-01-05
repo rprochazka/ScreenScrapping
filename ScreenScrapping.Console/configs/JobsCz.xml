@@ -1,0 +1,12 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ScrappingDefinition>
+  <JobListUrl>http://www.jobs.cz/search/?section=positions&amp;srch%5Bq%5D=.net&amp;srch%5Blocality%5D%5Bname%5D=Praha&amp;srch%5Blocality%5D%5Bcoords%5D=&amp;srch%5Blocality%5D%5Bcode%5D=R200000&amp;srch%5BminimalSalary%5D=&amp;srch%5BcompanyField%5D=&amp;srch%5BemploymentType%5D=&amp;srch%5BworkStatus%5D=&amp;srch%5Bcontract%5D=&amp;srch%5Bozp%5D=</JobListUrl>;
+  <JobDetailLinkUrlXPath>//div[@id='joblist']//div[@class='list']//h3/a/@href</JobDetailLinkUrlXPath>;
+  <NextPageUrlXPath>//div[@id='pager']/span[@class='next']/a/@href</NextPageUrlXPath>;
+
+  <JobDetailFieldsXPath>
+    <Field Name="JobTitle" XPath="//h2[@id='g2d-name']" />
+    <Field Name="JobDesc" XPath="//div[@id='g2-desc']/p" />
+  </JobDetailFieldsXPath>
+            
+</ScrappingDefinition>

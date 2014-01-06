@@ -1,29 +1,30 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
+using ScreenScrapping.Console.ScrappingDefinition;
 
 namespace ScreenScrapping.Console
 {
     class Program
     {
         static void Main(string[] args)
-        {
-            const string jobListUrl = "http://www.jobs.cz/search/?section=positions&srch%5Bq%5D=.net&srch%5Blocality%5D%5Bname%5D=Praha&srch%5Blocality%5D%5Bcoords%5D=&srch%5Blocality%5D%5Bcode%5D=R200000&srch%5BminimalSalary%5D=&srch%5BcompanyField%5D=&srch%5BemploymentType%5D=&srch%5BworkStatus%5D=&srch%5Bcontract%5D=&srch%5Bozp%5D=";            
-            const string jobDetailLinkUrlXPath = "//div[@id='joblist']//div[@class='list']//h3/a/@href";
-            const string nextPageUrlXPath = "//div[@id='pager']/span[@class='next']/a/@href";
+        {                                    
+            var scrappingDefinitions =
+                ((ScrappingDefinitionSection)System.Configuration.ConfigurationManager
+                    .GetSection("ScrappingDefinition")).Definitions;
 
-            var jobDetailFieldsXPath = new Dictionary<string, string>
-                                           {
-                                               {"jobTitle", "//h2[@id='g2d-name']"},
-                                               {"jobDesc", "//div[@id='g2-desc']/p"}
-                                           };
-            
-            var detailLinks = GetDetailLinks(jobListUrl, jobDetailLinkUrlXPath, nextPageUrlXPath);
-            //DisplayInConsole(detailLinks);
+            var scrappingDefinition = scrappingDefinitions.First();
+
+            var detailLinks = GetDetailLinks(scrappingDefinition.BaseUrl, scrappingDefinition.JobDetailLinkUrlXPath, scrappingDefinition.NextPageUrlXPath).ToList();
+            DisplayInConsole(detailLinks);
 
             foreach (var detailLink in detailLinks)
             {
-                var scrappedFields = GetScrappedFields(detailLink, jobDetailFieldsXPath);
+                var scrappedFields = GetScrappedFields(detailLink,
+                    scrappingDefinition.DetailFields
+                        .Select(f => new {Key = f.Name, Value = f.XPath})
+                        .ToDictionary(i => i.Key, i => i.Value));
                 DisplayInConsole(detailLink, scrappedFields);
-            }
+            }            
         }
 
         static IEnumerable<string> GetDetailLinks(string initialUrl, string detailLinkUrlXPath, string nextPageUrlXPath)
@@ -32,7 +33,7 @@ namespace ScreenScrapping.Console
             return scrappingEngine.GetDetailLinkUrls(initialUrl, detailLinkUrlXPath, nextPageUrlXPath);
         }
 
-        static Dictionary<string, string> GetScrappedFields(string jobDetailUrl, Dictionary<string, string> jobDetailFieldsXPath)
+        static IEnumerable<KeyValuePair<string, string>> GetScrappedFields(string jobDetailUrl, IDictionary<string, string> jobDetailFieldsXPath)
         {
             var scrappingEngine = new Engine.EngineManager();
             return scrappingEngine.GetScrappedFields(jobDetailUrl, jobDetailFieldsXPath);
@@ -49,7 +50,7 @@ namespace ScreenScrapping.Console
             System.Console.ReadLine();
         }
 
-        static void DisplayInConsole(string url, Dictionary<string, string> result)
+        static void DisplayInConsole(string url, IEnumerable<KeyValuePair<string, string>> result)
         {
             System.Console.WriteLine("Results:");
             System.Console.WriteLine(url);

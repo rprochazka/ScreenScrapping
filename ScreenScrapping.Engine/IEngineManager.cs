@@ -31,6 +31,6 @@ namespace ScreenScrapping.Engine
         /// <param name="url"></param>
         /// <param name="fieldsXPathDefinitions"></param>
         /// <returns></returns>
-        Dictionary<string, string> GetScrappedFields(string url, Dictionary<string, string> fieldsXPathDefinitions);
+        IDictionary<string, string> GetScrappedFields(string url, IDictionary<string, string> fieldsXPathDefinitions);
     }
 }

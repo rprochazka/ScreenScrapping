@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Net;
+using System.Text;
 using System.Web;
 
 namespace ScreenScrapping.Engine
@@ -10,7 +11,7 @@ namespace ScreenScrapping.Engine
         {
             Guard(url);
 
-            var webClient = new WebClient();
+            var webClient = new WebClient {Encoding = Encoding.UTF8};
             var htmlEncoded = webClient.DownloadString(url);
 
             return HttpUtility.HtmlDecode(htmlEncoded);

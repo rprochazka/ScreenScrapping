@@ -21,7 +21,7 @@ namespace ScreenScrapping.Engine
             return GetDetailLinkUrls(detailLinkUrlXPath, pagingStrategy);
         }
 
-        public Dictionary<string, string> GetScrappedFields(string url, Dictionary<string, string> fieldsXPathDefinitions)
+        public IDictionary<string, string> GetScrappedFields(string url, IDictionary<string, string> fieldsXPathDefinitions)
         {
             var htmlContent = GetUrlContent(url);
             
@@ -69,7 +69,7 @@ namespace ScreenScrapping.Engine
             return downloader.GetUrlContent(url);
         }
 
-        private Dictionary<string, IEnumerable<string>> ScrapeFields(Dictionary<string, string> xpathDefinitions, IHtmlParser parser)
+        private IEnumerable<KeyValuePair<string, IEnumerable<string>>> ScrapeFields(IEnumerable<KeyValuePair<string, string>> xpathDefinitions, IHtmlParser parser)
         {            
             return
                 xpathDefinitions

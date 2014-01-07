@@ -14,14 +14,14 @@
         </add>
 
         <add
-            Name="JobsCZ2"
-            BaseUrl ="http://www.jobs.cz/search/?section=positions&amp;srch%5Bq%5D=.net&amp;srch%5Blocality%5D%5Bname%5D=Praha&amp;srch%5Blocality%5D%5Bcoords%5D=&amp;srch%5Blocality%5D%5Bcode%5D=R200000&amp;srch%5BminimalSalary%5D=&amp;srch%5BcompanyField%5D=&amp;srch%5BemploymentType%5D=&amp;srch%5BworkStatus%5D=&amp;srch%5Bcontract%5D=&amp;srch%5Bozp%5D="
-            JobDetailLinkUrlXPath = "//div[@id='joblist']//div[@class='list']//h3/a/@href"
-            NextPageUrlXPath = "//div[@id='pager']/span[@class='next']/a/@href">
+            Name="BelkEN"
+            BaseUrl ="http://www.jobs.net/jobs/belk/en-us/search/"
+            JobDetailLinkUrlXPath = "//BODY/FORM[@id='aspnetForm']/DIV/DIV/DIV/DIV[@id='structure']/DIV[@id='main']/DIV[@id='main-content']/TABLE/TBODY/tr/td/H4//A/@href"
+            NextPageUrlXPath = "//BODY/FORM[@id='aspnetForm']/DIV/DIV/DIV/DIV[@id='structure']/DIV[@id='main']/DIV[@id='main-content']/TABLE/THEAD/TR/TH/SPAN/A/@href">
 
             <JobDetailFields>
-                <add Name="JobTitle" XPath="//h2[@id='g2d-name']" />
-                <add Name="JobDesc" XPath="//div[@id='g2-desc']/p" />
+                <add Name="JobTitle" XPath="//BODY/FORM[@id='aspnetForm']/DIV/DIV/DIV/DIV[@id='structure']/DIV[@id='main']/DIV[@id='main-content']/DIV/DIV/H1" />
+                <add Name="JobDesc" XPath="//BODY/FORM[@id='aspnetForm']/DIV/DIV/DIV/DIV[@id='structure']/DIV[@id='main']/DIV[@id='main-content']/DIV/DIV/DIV/UL/LI/SPAN" />
             </JobDetailFields>
         </add>
     </Definitions>

@@ -44,6 +44,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="EngineManager.cs" />
+    <Compile Include="Helpers\Extensions.cs" />
     <Compile Include="HtmlParsers\HtmlAgilityParser.cs" />
     <Compile Include="HtmlParsers\IHtmlParser.cs" />
     <Compile Include="HtmlParsers\XPathNavigatorParser.cs" />
@@ -52,6 +53,7 @@
     <Compile Include="PagingStrategy\MultiPaging.cs" />
     <Compile Include="PagingStrategy\SimplePaging.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="UniqueUrlCollection.cs" />
     <Compile Include="WebDownloader.cs" />
   </ItemGroup>
   <ItemGroup>

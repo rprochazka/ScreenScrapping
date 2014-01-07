@@ -35,7 +35,7 @@ namespace ScreenScrapping.Engine
 
         private IEnumerable<string> GetDetailLinkUrls(string detailLinkUrlXPath, IPagingStrategy paging)
         {
-            var result = new List<string>();
+            var result = new UniqueUrlCollection();
 
             var detailLinkDefinition = new Dictionary<string, string> { { "detailLink", detailLinkUrlXPath } };
 

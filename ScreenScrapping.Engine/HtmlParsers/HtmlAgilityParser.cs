@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Text.RegularExpressions;
 using HtmlAgilityPack;
+using ScreenScrapping.Engine.Helpers;
 
 namespace ScreenScrapping.Engine.HtmlParsers
 {
@@ -12,22 +13,23 @@ namespace ScreenScrapping.Engine.HtmlParsers
     {
         private const string AttributeSelectionRegexPattern = "/@(?<att>[a-zA-Z0-9]+$)";
 
-        private readonly HtmlDocument _doc; 
+        private HtmlDocument _doc; 
         public HtmlAgilityParser(string html)
         {
-            _doc = new HtmlDocument();
-            _doc.LoadHtml(html);
+            InitializeParser(html);
         }
 
         public IEnumerable<string> EvaluateXPath(string xpath)
         {
+            var fixedXPath = FixXPathLetterCase(xpath);
+
             string attributeName;
-            if (IsAttributeSelection(xpath, out attributeName))
+            if (IsAttributeSelection(fixedXPath, out attributeName))
             {
-                return EvaluateXPath(xpath, attributeName);
+                return EvaluateXPath(fixedXPath, attributeName);
             }
 
-            var matchedNodes = _doc.DocumentNode.SelectNodes(xpath);
+            var matchedNodes = _doc.DocumentNode.SelectNodes(fixedXPath);
             
             return 
                 null != matchedNodes 
@@ -36,7 +38,7 @@ namespace ScreenScrapping.Engine.HtmlParsers
         }
 
         private IEnumerable<string> EvaluateXPath(string xpath, string attributeName)
-        {
+        {            
             var matchedNodes = _doc.DocumentNode.SelectNodes(xpath);
             if (null != matchedNodes)
             {
@@ -49,18 +51,43 @@ namespace ScreenScrapping.Engine.HtmlParsers
 
         }
 
+        private void InitializeParser(string html)
+        {            
+            _doc = new HtmlDocument();
+
+            //workaround for "different" handling of form element using HtmlAgilityPack
+            HtmlNode.ElementsFlags.Remove("form");
+
+            _doc.LoadHtml(html);            
+        }
+
         private bool IsAttributeSelection(string xpath, out string attributeName)
         {
             attributeName = null;
 
             var regex = new Regex(AttributeSelectionRegexPattern, RegexOptions.Compiled);
-            var match = regex.Match(xpath);
+            var match = regex.Match(xpath);            
             if (match.Success)
             {
                 attributeName = match.Groups["att"].Value;                
             }
 
-            return !string.IsNullOrEmpty(attributeName);
+            return !string.IsNullOrEmpty(attributeName);            
+        }
+
+        /// <summary>
+        /// make the element and attribute names lowercase (as the html parsing works with lower cases only)
+        /// </summary>
+        /// <param name="xpath"></param>
+        /// <returns></returns>
+        private string FixXPathLetterCase(string xpath)
+        {
+            const string elementNamePattern = "(?<=/)\\w+";
+            const string attributeNamePattern = "(?<=@)\\w+";
+
+            return xpath
+                .ToLower(elementNamePattern)
+                .ToLower(attributeNamePattern);
         }
     }
 }

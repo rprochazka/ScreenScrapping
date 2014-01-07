@@ -12,7 +12,7 @@ namespace ScreenScrapping.Console
                 ((ScrappingDefinitionSection)System.Configuration.ConfigurationManager
                     .GetSection("ScrappingDefinition")).Definitions;
 
-            var scrappingDefinition = scrappingDefinitions.First();
+            var scrappingDefinition = scrappingDefinitions.First(d=>d.Name == "BelkEN");
 
             var detailLinks = GetDetailLinks(scrappingDefinition.BaseUrl, scrappingDefinition.JobDetailLinkUrlXPath, scrappingDefinition.NextPageUrlXPath).ToList();
             DisplayInConsole(detailLinks);

@@ -19,7 +19,7 @@ namespace ScreenScrapping.Engine
 
         public IEnumerator<string> GetEnumerator()
         {
-            return _visitedUrls.TakeWhile(t => t != null).GetEnumerator();
+            return _visitedUrls.GetEnumerator();            
         }
 
         IEnumerator IEnumerable.GetEnumerator()

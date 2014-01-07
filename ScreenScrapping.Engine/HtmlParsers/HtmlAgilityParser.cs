@@ -19,6 +19,11 @@ namespace ScreenScrapping.Engine.HtmlParsers
             InitializeParser(html);
         }
 
+        /// <summary>
+        /// returns list of text nodes from the xpath evaluation
+        /// </summary>
+        /// <param name="xpath"></param>
+        /// <returns></returns>
         public IEnumerable<string> EvaluateXPath(string xpath)
         {
             var fixedXPath = FixXPathLetterCase(xpath);
@@ -37,6 +42,13 @@ namespace ScreenScrapping.Engine.HtmlParsers
                     : new List<string>();
         }
 
+        /// <summary>
+        /// evaluate xpath for attribute selection
+        /// this is a workaround for the attribute selection in xpath not supported by HtmlAgilityPack
+        /// </summary>
+        /// <param name="xpath"></param>
+        /// <param name="attributeName"></param>
+        /// <returns></returns>
         private IEnumerable<string> EvaluateXPath(string xpath, string attributeName)
         {            
             var matchedNodes = _doc.DocumentNode.SelectNodes(xpath);

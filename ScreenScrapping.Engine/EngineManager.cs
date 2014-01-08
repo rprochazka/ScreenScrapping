@@ -1,5 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
+using ScreenScrapping.Engine.Dtos;
+using ScreenScrapping.Engine.Helpers;
 using ScreenScrapping.Engine.HtmlParsers;
 using ScreenScrapping.Engine.PagingStrategy;
 
@@ -7,25 +9,29 @@ namespace ScreenScrapping.Engine
 {
     public class EngineManager : IEngineManager
     {        
-        public IEnumerable<string> GetDetailLinkUrls(string initialUrl, string detailLinkUrlXPath)
-        {
-            var pagingStrategy = new SimplePaging(initialUrl);
+        //public IEnumerable<string> GetDetailLinkUrls(string initialUrl, string detailLinkUrlXPath)
+        //{
+        //    var pagingStrategy = new SimplePaging(initialUrl);
 
-            return GetDetailLinkUrls(detailLinkUrlXPath, pagingStrategy);
-        }
+        //    return GetDetailLinkUrls(detailLinkUrlXPath, pagingStrategy);
+        //}
 
-        public IEnumerable<string> GetDetailLinkUrls(string initialUrl, string detailLinkUrlXPath, string nextPageLinkUrlXPath)
+        public IEnumerable<UrlLinkInfo> GetDetailLinkUrls(string initialUrl, string detailLinkUrlXPath, string nextPageLinkUrlXPath = null, int maxLinks = -1)
         {
-            var pagingStrategy = new MultiPaging(initialUrl, nextPageLinkUrlXPath);
+            IPagingStrategy pagingStrategy = (string.IsNullOrEmpty(nextPageLinkUrlXPath))
+                ? (IPagingStrategy) new SimplePaging(initialUrl)
+                : new MultiPaging(initialUrl, nextPageLinkUrlXPath);
 
             return GetDetailLinkUrls(detailLinkUrlXPath, pagingStrategy);
         }
 
         public IDictionary<string, string> GetScrappedFields(string url, IDictionary<string, string> fieldsXPathDefinitions)
         {
-            var htmlContent = GetUrlContent(url);
-            
-            var scrappedFields = ScrapeFields(fieldsXPathDefinitions, GetHtmlParser(htmlContent));
+            var htmlContent = GetHtmlContent(url);
+            IHtmlParser parser;
+            InitParser(out parser, htmlContent);
+
+            var scrappedFields = ScrapeFields(fieldsXPathDefinitions, parser);
 
             return
                 scrappedFields
@@ -33,9 +39,9 @@ namespace ScreenScrapping.Engine
                     .ToDictionary(f => f.Key, f => f.Value);
         }
 
-        private IEnumerable<string> GetDetailLinkUrls(string detailLinkUrlXPath, IPagingStrategy paging)
+        private IEnumerable<UrlLinkInfo> GetDetailLinkUrls(string detailLinkUrlXPath, IPagingStrategy paging)
         {
-            var result = new UniqueUrlCollection();
+            var result = new UniqueUrlInfoCollection();
 
             var detailLinkDefinition = new Dictionary<string, string> { { "detailLink", detailLinkUrlXPath } };
 
@@ -44,11 +50,13 @@ namespace ScreenScrapping.Engine
             {
                 var urlToProcess = paging.CurrentPageUrl;
 
-                var htmlContent = GetUrlContent(urlToProcess);
+                var htmlContent = GetHtmlContent(urlToProcess);
+                InitParser(out parser, htmlContent);
 
-                parser = GetHtmlParser(htmlContent);
-
-                var scrappedLinks = ScrapeFields(detailLinkDefinition, parser).SelectMany(f => f.Value);
+                var scrappedLinks =
+                    ScrapeFields(detailLinkDefinition, parser)
+                        .SelectMany(f => f.Value)
+                        .ToUrlLinkInfos();
 
                 result.AddRange(scrappedLinks);
 
@@ -56,20 +64,27 @@ namespace ScreenScrapping.Engine
 
 
             return result;
-        }
+        }        
 
-        private IHtmlParser GetHtmlParser(string content)
+        private void InitParser(out IHtmlParser parser, string htmlContent)
         {
-            return new HtmlAgilityParser(content);
+            parser = new HtmlAgilityParser(htmlContent);
         }
 
-        private string GetUrlContent(string url)
+        private string GetHtmlContent(string url)
         {
             var downloader = new WebDownloader();
             return downloader.GetUrlContent(url);
         }
 
-        private IEnumerable<KeyValuePair<string, IEnumerable<string>>> ScrapeFields(IEnumerable<KeyValuePair<string, string>> xpathDefinitions, IHtmlParser parser)
+        /// <summary>
+        /// performs scrapping of a html content passsed in IHtmlParser based on the xpath definition
+        /// pased in xpath definition
+        /// </summary>
+        /// <param name="xpathDefinitions">key-value pairs of field name and xpath location</param>
+        /// <param name="parser">html parser holding the html to parse</param>
+        /// <returns>key-value pairs of field name and nodes </returns>
+        private IEnumerable<KeyValuePair<string, IEnumerable<ScrappedHtmlNode>>> ScrapeFields(IEnumerable<KeyValuePair<string, string>> xpathDefinitions, IHtmlParser parser)
         {            
             return
                 xpathDefinitions

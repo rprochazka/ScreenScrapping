@@ -1,19 +1,17 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using ScreenScrapping.Engine.Dtos;
 
 namespace ScreenScrapping.Engine
 {
     public interface IEngineManager
     {
-        /// <summary>
-        /// get list of urls on a page (e.g. links to detail page from the master page)
-        /// </summary>
-        /// <param name="initialUrl">the first page url</param>
-        /// <param name="detailLinkUrlXPath">xpath of the detail link url value</param>
-        /// <returns></returns>
-        IEnumerable<string> GetDetailLinkUrls(string initialUrl, string detailLinkUrlXPath);
+        ///// <summary>
+        ///// get list of urls on a page (e.g. links to detail page from the master page)
+        ///// </summary>
+        ///// <param name="initialUrl">the first page url</param>
+        ///// <param name="detailLinkUrlXPath">xpath of the detail link url value</param>
+        ///// <returns></returns>
+        //IEnumerable<ScrappedHtmlNode> GetDetailLinkUrls(string initialUrl, string detailLinkUrlXPath);
 
         /// <summary>
         /// get list of urls on a given (first) page (e.g. links to detail page from the master page) and the following ones
@@ -21,9 +19,10 @@ namespace ScreenScrapping.Engine
         /// </summary>
         /// <param name="initialUrl">the first page url</param>
         /// <param name="detailLinkUrlXPath">xpath of the detail link url value</param>
-        /// <param name="nextPageLinkUrlXPath">xpath of the 'next' link url value</param>
+        /// <param name="nextPageLinkUrlXPath">xpath of the 'next' link url value</param>        
+        /// <param name="maxLinks"></param>
         /// <returns></returns>
-        IEnumerable<string> GetDetailLinkUrls(string initialUrl, string detailLinkUrlXPath, string nextPageLinkUrlXPath);
+        IEnumerable<UrlLinkInfo> GetDetailLinkUrls(string initialUrl, string detailLinkUrlXPath, string nextPageLinkUrlXPath = null, int maxLinks = -1);
 
         /// <summary>
         /// performs screen scrapping of the given page based on the xpath fields definition

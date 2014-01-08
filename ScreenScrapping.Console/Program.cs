@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using ScreenScrapping.Console.ScrappingDefinition;
+using ScreenScrapping.Engine.Dtos;
 
 namespace ScreenScrapping.Console
 {
@@ -19,15 +20,15 @@ namespace ScreenScrapping.Console
 
             foreach (var detailLink in detailLinks)
             {
-                var scrappedFields = GetScrappedFields(detailLink,
+                var scrappedFields = GetScrappedFields(detailLink.LinkUrl,
                     scrappingDefinition.DetailFields
                         .Select(f => new {Key = f.Name, Value = f.XPath})
                         .ToDictionary(i => i.Key, i => i.Value));
-                DisplayInConsole(detailLink, scrappedFields);
+                DisplayInConsole(detailLink.LinkUrl, scrappedFields);
             }            
         }
 
-        static IEnumerable<string> GetDetailLinks(string initialUrl, string detailLinkUrlXPath, string nextPageUrlXPath)
+        static IEnumerable<UrlLinkInfo> GetDetailLinks(string initialUrl, string detailLinkUrlXPath, string nextPageUrlXPath)
         {
             var scrappingEngine = new Engine.EngineManager();
             return scrappingEngine.GetDetailLinkUrls(initialUrl, detailLinkUrlXPath, nextPageUrlXPath);
@@ -62,12 +63,15 @@ namespace ScreenScrapping.Console
             System.Console.ReadLine();
         }
 
-        static void DisplayInConsole(IEnumerable<string> result)
+        static void DisplayInConsole(IEnumerable<UrlLinkInfo> result)
         {
             System.Console.WriteLine("Results:");
             foreach (var item in result)
             {
-                System.Console.WriteLine(item);
+                System.Console.WriteLine();
+                System.Console.WriteLine(item.LinkTitle);
+                System.Console.WriteLine(item.LinkUrl);
+                System.Console.WriteLine();
             }
 
             System.Console.ReadLine();

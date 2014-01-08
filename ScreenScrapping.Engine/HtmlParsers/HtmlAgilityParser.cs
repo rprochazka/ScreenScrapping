@@ -3,6 +3,7 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using HtmlAgilityPack;
 using ScreenScrapping.Engine.Helpers;
+using ScreenScrapping.Engine.Dtos;
 
 namespace ScreenScrapping.Engine.HtmlParsers
 {
@@ -20,11 +21,11 @@ namespace ScreenScrapping.Engine.HtmlParsers
         }
 
         /// <summary>
-        /// returns list of text nodes from the xpath evaluation
+        /// returns list of html nodes from the xpath evaluation
         /// </summary>
         /// <param name="xpath"></param>
         /// <returns></returns>
-        public IEnumerable<string> EvaluateXPath(string xpath)
+        public IEnumerable<ScrappedHtmlNode> EvaluateXPath(string xpath)
         {
             var fixedXPath = FixXPathLetterCase(xpath);
 
@@ -35,12 +36,12 @@ namespace ScreenScrapping.Engine.HtmlParsers
             }
 
             var matchedNodes = _doc.DocumentNode.SelectNodes(fixedXPath);
-            
-            return 
-                null != matchedNodes 
-                    ? matchedNodes.Select(n => n.InnerText) 
-                    : new List<string>();
-        }
+
+            return
+                null != matchedNodes
+                    ? matchedNodes.Select(n => new ScrappedHtmlNode { NodeText = n.InnerText }) 
+                    : new List<ScrappedHtmlNode>();
+        }        
 
         /// <summary>
         /// evaluate xpath for attribute selection
@@ -49,17 +50,23 @@ namespace ScreenScrapping.Engine.HtmlParsers
         /// <param name="xpath"></param>
         /// <param name="attributeName"></param>
         /// <returns></returns>
-        private IEnumerable<string> EvaluateXPath(string xpath, string attributeName)
+        private IEnumerable<ScrappedHtmlNode> EvaluateXPath(string xpath, string attributeName)
         {            
             var matchedNodes = _doc.DocumentNode.SelectNodes(xpath);
             if (null != matchedNodes)
             {
-                return matchedNodes
-                        .Select(n => n.GetAttributeValue(attributeName, null))
-                        .Where(n => !string.IsNullOrEmpty(n));
+                
+                    var selectedValues =
+                        from matchedNode in matchedNodes
+                        let attValue = matchedNode.GetAttributeValue(attributeName, null)
+                        where !string.IsNullOrEmpty(attValue)
+                        select new ScrappedHtmlNode { NodeText = matchedNode.InnerText, Attributes = new Dictionary<string, string> {{attributeName, attValue}} };
+
+                    return selectedValues;
+                
             }
 
-            return new List<string>();
+            return new List<ScrappedHtmlNode>();
 
         }
 
@@ -73,6 +80,12 @@ namespace ScreenScrapping.Engine.HtmlParsers
             _doc.LoadHtml(html);            
         }
 
+        /// <summary>
+        /// determines if the xpath defines attribute selection (xpath ending on \@[AttributeName])
+        /// </summary>
+        /// <param name="xpath"></param>
+        /// <param name="attributeName"></param>
+        /// <returns></returns>
         private bool IsAttributeSelection(string xpath, out string attributeName)
         {
             attributeName = null;
@@ -100,6 +113,6 @@ namespace ScreenScrapping.Engine.HtmlParsers
             return xpath
                 .ToLower(elementNamePattern)
                 .ToLower(attributeNamePattern);
-        }
+        }        
     }
 }

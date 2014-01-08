@@ -1,5 +1,4 @@
-﻿using System;
-using ScreenScrapping.Engine.HtmlParsers;
+﻿using ScreenScrapping.Engine.HtmlParsers;
 
 namespace ScreenScrapping.Engine.PagingStrategy
 {

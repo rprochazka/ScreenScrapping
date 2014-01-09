@@ -3,7 +3,7 @@ using System.Net;
 using System.Text;
 using System.Web;
 
-namespace ScreenScrapping.Engine
+namespace ScreenScrapping.Engine.Helpers
 {
     internal class WebDownloader
     {

@@ -13,34 +13,27 @@ namespace ScreenScrapping.Console
                 ((ScrappingDefinitionSection)System.Configuration.ConfigurationManager
                     .GetSection("ScrappingDefinition")).Definitions;
 
-            var scrappingDefinition = scrappingDefinitions.First(d=>d.Name == "BelkEN");
+            var scrappingDefinition = scrappingDefinitions.First(d => d.Name == "BelkEN");
 
-            var detailLinks = GetDetailLinks(scrappingDefinition.BaseUrl, scrappingDefinition.JobDetailLinkUrlXPath, scrappingDefinition.NextPageUrlXPath).ToList();
-            DisplayInConsole(detailLinks);
-
-            foreach (var detailLink in detailLinks)
-            {
-                var scrappedFields = GetScrappedFields(detailLink.LinkUrl,
-                    scrappingDefinition.DetailFields
-                        .Select(f => new {Key = f.Name, Value = f.XPath})
-                        .ToDictionary(i => i.Key, i => i.Value));
-                DisplayInConsole(detailLink.LinkUrl, scrappedFields);
-            }            
+            RunScrapping(scrappingDefinition, 15);
+            
+            System.Console.ReadLine();
         }
 
-        static IEnumerable<UrlLinkInfo> GetDetailLinks(string initialUrl, string detailLinkUrlXPath, string nextPageUrlXPath)
+        private static void RunScrapping(Definition definition, int linkLimit)
         {
-            var scrappingEngine = new Engine.EngineManager();
-            return scrappingEngine.GetDetailLinkUrls(initialUrl, detailLinkUrlXPath, nextPageUrlXPath);
+            var engine = new EngineRunner();
+            var fieldsdefinition = definition.DetailFields.Select(f => new { Key = f.Name, Value = f.XPath })
+                            .ToDictionary(i => i.Key, i => i.Value);
+            var scrappedFields = 
+                    engine.GetScrappedFields(
+                        definition.BaseUrl, definition.JobDetailLinkUrlXPath,
+                        fieldsdefinition, definition.NextPageUrlXPath, linkLimit);
+
+            DisplayInConsole(scrappedFields);
         }
 
-        static IEnumerable<KeyValuePair<string, string>> GetScrappedFields(string jobDetailUrl, IDictionary<string, string> jobDetailFieldsXPath)
-        {
-            var scrappingEngine = new Engine.EngineManager();
-            return scrappingEngine.GetScrappedFields(jobDetailUrl, jobDetailFieldsXPath);
-        }
-
-        static void DisplayInConsole(Dictionary<string, string> result)
+        static void DisplayInConsole(IEnumerable<KeyValuePair<string, string>> result)
         {
             System.Console.WriteLine("Results:");
             foreach (var item in result)
@@ -60,7 +53,21 @@ namespace ScreenScrapping.Console
                 System.Console.WriteLine(string.Concat(item.Key, ": ", item.Value));                
             }
             System.Console.WriteLine();
-            System.Console.ReadLine();
+            //System.Console.ReadLine();
+        }
+
+        static void DisplayInConsole(IEnumerable<IEnumerable<KeyValuePair<string, string>>> result)
+        {
+            System.Console.WriteLine("Results:");
+            System.Console.WriteLine();
+            foreach (var detail in result.ToList())
+            {
+                foreach (var item in detail)
+                {
+                    System.Console.WriteLine(string.Concat(item.Key, ": ", item.Value));   
+                }
+                System.Console.WriteLine();
+            }            
         }
 
         static void DisplayInConsole(IEnumerable<UrlLinkInfo> result)
@@ -74,7 +81,7 @@ namespace ScreenScrapping.Console
                 System.Console.WriteLine();
             }
 
-            System.Console.ReadLine();
+            //System.Console.ReadLine();
         }
     }
 }

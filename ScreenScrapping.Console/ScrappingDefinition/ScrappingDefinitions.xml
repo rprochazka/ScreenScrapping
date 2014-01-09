@@ -21,7 +21,7 @@
 
             <JobDetailFields>
                 <add Name="JobTitle" XPath="//BODY/FORM[@id='aspnetForm']/DIV/DIV/DIV/DIV[@id='structure']/DIV[@id='main']/DIV[@id='main-content']/DIV/DIV/H1" />
-                <add Name="JobDesc" XPath="//BODY/FORM[@id='aspnetForm']/DIV/DIV/DIV/DIV[@id='structure']/DIV[@id='main']/DIV[@id='main-content']/DIV/DIV/DIV/UL/LI/SPAN" />
+                <add Name="JobDesc" XPath="//div[@class='job_description_text'] | //*[@id='main-content']/div/div/div[8]" />
             </JobDetailFields>
         </add>
     </Definitions>

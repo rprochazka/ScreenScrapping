@@ -3,6 +3,10 @@ using System.Collections.Generic;
 
 namespace ScreenScrapping.Engine.Dtos
 {
+    /// <summary>
+    /// provides generic collection of unique items
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
     public class UniqueCollection<T> : IEnumerable<T>
     {
         private readonly IList<T> _items;
@@ -27,7 +31,7 @@ namespace ScreenScrapping.Engine.Dtos
             return GetEnumerator();
         }
 
-        public void Add(T item)
+        public virtual void Add(T item)
         {
             T eligibleItem;
             if (!Contains(item, out eligibleItem))
@@ -36,7 +40,7 @@ namespace ScreenScrapping.Engine.Dtos
             }
         }
 
-        public void AddRange(IEnumerable<T> items)
+        public virtual void AddRange(IEnumerable<T> items)
         {
             foreach (var item in items)
             {
@@ -44,11 +48,16 @@ namespace ScreenScrapping.Engine.Dtos
             }
         }
 
-        public bool Contains(T item)
+        public virtual bool Contains(T item)
         {
             T eligibleItem;
             return Contains(item, out eligibleItem);
-        }                
+        }
+
+        protected virtual T ConvertToEligibleFormat(T originalItem)
+        {
+            return originalItem;
+        }
 
         private bool Contains(T originalItem, out T eligibleItem)
         {
@@ -61,11 +70,6 @@ namespace ScreenScrapping.Engine.Dtos
                 return false;
             }
             return true;
-        }
-
-        protected virtual T ConvertToEligibleFormat(T originalItem)
-        {
-            return originalItem;
-        }
-    }
+        }        
+    }    
 }

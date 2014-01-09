@@ -8,21 +8,14 @@ using ScreenScrapping.Engine.PagingStrategy;
 namespace ScreenScrapping.Engine
 {
     public class EngineManager : IEngineManager
-    {        
-        //public IEnumerable<string> GetDetailLinkUrls(string initialUrl, string detailLinkUrlXPath)
-        //{
-        //    var pagingStrategy = new SimplePaging(initialUrl);
-
-        //    return GetDetailLinkUrls(detailLinkUrlXPath, pagingStrategy);
-        //}
-
+    {                
         public IEnumerable<UrlLinkInfo> GetDetailLinkUrls(string initialUrl, string detailLinkUrlXPath, string nextPageLinkUrlXPath = null, int maxLinks = -1)
         {
-            IPagingStrategy pagingStrategy = (string.IsNullOrEmpty(nextPageLinkUrlXPath))
+            var pagingStrategy = (string.IsNullOrEmpty(nextPageLinkUrlXPath))
                 ? (IPagingStrategy) new SimplePaging(initialUrl)
                 : new MultiPaging(initialUrl, nextPageLinkUrlXPath);
 
-            return GetDetailLinkUrls(detailLinkUrlXPath, pagingStrategy);
+            return GetDetailLinkUrls(detailLinkUrlXPath, pagingStrategy, maxLinks);
         }
 
         public IDictionary<string, string> GetScrappedFields(string url, IDictionary<string, string> fieldsXPathDefinitions)
@@ -35,13 +28,13 @@ namespace ScreenScrapping.Engine
 
             return
                 scrappedFields
-                    .Select(f => new {f.Key, Value = string.Join(" ", f.Value)})
+                    .Select(f => new {f.Key, Value = string.Join(" ", f.Value.Select(n=>n.NodeText))})
                     .ToDictionary(f => f.Key, f => f.Value);
         }
 
-        private IEnumerable<UrlLinkInfo> GetDetailLinkUrls(string detailLinkUrlXPath, IPagingStrategy paging)
+        private IEnumerable<UrlLinkInfo> GetDetailLinkUrls(string detailLinkUrlXPath, IPagingStrategy paging, int maxEntries)
         {
-            var result = new UniqueUrlInfoCollection();
+            var result = new UniqueAndItemsLimitAwareUrlInfoCollection(maxEntries);
 
             var detailLinkDefinition = new Dictionary<string, string> { { "detailLink", detailLinkUrlXPath } };
 
@@ -51,7 +44,7 @@ namespace ScreenScrapping.Engine
                 var urlToProcess = paging.CurrentPageUrl;
 
                 var htmlContent = GetHtmlContent(urlToProcess);
-                InitParser(out parser, htmlContent);
+                InitParser(out parser, htmlContent);                
 
                 var scrappedLinks =
                     ScrapeFields(detailLinkDefinition, parser)
@@ -60,7 +53,7 @@ namespace ScreenScrapping.Engine
 
                 result.AddRange(scrappedLinks);
 
-            } while (paging.MoveNext(parser));
+            } while (paging.MoveNext(parser) && !result.MaxLimitReached);
 
 
             return result;

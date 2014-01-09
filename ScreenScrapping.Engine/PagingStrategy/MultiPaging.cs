@@ -8,18 +8,15 @@ namespace ScreenScrapping.Engine.PagingStrategy
     class MultiPaging : IPagingStrategy
     {
         private readonly string _nextPageXPath;        
-        private readonly UniqueUrlCollection _visitedUniqueUrls;
-        private readonly int _maxEntries;
+        private readonly UniqueUrlCollection _visitedUniqueUrls;        
 
-        public MultiPaging(string initialUrl, string nextPageXPath, int maxEntries = -1)
+        public MultiPaging(string initialUrl, string nextPageXPath)
         {
             _visitedUniqueUrls = new UniqueUrlCollection();
 
             _nextPageXPath = nextPageXPath;            
             CurrentPageUrl = initialUrl;
             _visitedUniqueUrls.Add(initialUrl);
-
-            _maxEntries = maxEntries;
         }
 
         public bool MoveNext(IHtmlParser parser)
@@ -39,21 +36,9 @@ namespace ScreenScrapping.Engine.PagingStrategy
 
         private bool CanMoveNext(string nextPageUrl)
         {
-            return (
-                !string.IsNullOrEmpty(nextPageUrl)
-                && !_visitedUniqueUrls.Contains(nextPageUrl)
-                && CheckEntriesTreshold());
-        }
-
-        private bool CheckEntriesTreshold()
-        {
-            if (_maxEntries < 0)
-            {
-                return true;
-            }
-
-            return _visitedUniqueUrls.Count() < _maxEntries;
-        }
+            return (!string.IsNullOrEmpty(nextPageUrl)
+                && !_visitedUniqueUrls.Contains(nextPageUrl));
+        }        
 
         private string ExtractHrefAttributeValue(ScrappedHtmlNode htmlNode)
         {

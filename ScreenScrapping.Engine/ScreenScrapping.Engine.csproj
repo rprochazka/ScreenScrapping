@@ -45,7 +45,7 @@
   <ItemGroup>
     <Compile Include="Dtos\ScrappedHtmlNode.cs" />
     <Compile Include="Dtos\UniqueCollection.cs" />
-    <Compile Include="Dtos\UniqueUrlInfoCollection.cs" />
+    <Compile Include="Dtos\UniqueAndItemsLimitAwareUrlInfoCollection.cs" />
     <Compile Include="EngineManager.cs" />
     <Compile Include="Helpers\Extensions.cs" />
     <Compile Include="HtmlParsers\HtmlAgilityParser.cs" />
@@ -57,7 +57,7 @@
     <Compile Include="PagingStrategy\SimplePaging.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Dtos\UniqueUrlCollection.cs" />
-    <Compile Include="WebDownloader.cs" />
+    <Compile Include="Helpers\WebDownloader.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

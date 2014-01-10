@@ -8,7 +8,17 @@ using ScreenScrapping.Engine.PagingStrategy;
 namespace ScreenScrapping.Engine
 {
     public class EngineManager : IEngineManager
-    {                
+    {
+        #region IEngineManager implementation
+        /// <summary>
+        /// get list of urls on a given (first) page (e.g. links to detail page from the master page) and the following ones
+        /// in a paging scenarios
+        /// </summary>
+        /// <param name="initialUrl">the first page url</param>
+        /// <param name="detailLinkUrlXPath">xpath of the detail link url value</param>
+        /// <param name="nextPageLinkUrlXPath">xpath of the 'next' link url value</param>        
+        /// <param name="maxLinks"></param>
+        /// <returns></returns>
         public IEnumerable<UrlLinkInfo> GetDetailLinkUrls(string initialUrl, string detailLinkUrlXPath, string nextPageLinkUrlXPath = null, int maxLinks = -1)
         {
             var pagingStrategy = (string.IsNullOrEmpty(nextPageLinkUrlXPath))
@@ -18,6 +28,12 @@ namespace ScreenScrapping.Engine
             return GetDetailLinkUrls(detailLinkUrlXPath, pagingStrategy, maxLinks);
         }
 
+        /// <summary>
+        /// performs screen scrapping of the given page based on the xpath fields definition
+        /// </summary>
+        /// <param name="url"></param>
+        /// <param name="fieldsXPathDefinitions"></param>
+        /// <returns></returns>
         public IDictionary<string, string> GetScrappedFields(string url, IDictionary<string, string> fieldsXPathDefinitions)
         {
             var htmlContent = GetHtmlContent(url);
@@ -31,6 +47,7 @@ namespace ScreenScrapping.Engine
                     .Select(f => new {f.Key, Value = string.Join(" ", f.Value.Select(n=>n.NodeText))})
                     .ToDictionary(f => f.Key, f => f.Value);
         }
+        #endregion
 
         private IEnumerable<UrlLinkInfo> GetDetailLinkUrls(string detailLinkUrlXPath, IPagingStrategy paging, int maxEntries)
         {

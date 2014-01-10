@@ -4,15 +4,7 @@ using ScreenScrapping.Engine.Dtos;
 namespace ScreenScrapping.Engine
 {
     public interface IEngineManager
-    {
-        ///// <summary>
-        ///// get list of urls on a page (e.g. links to detail page from the master page)
-        ///// </summary>
-        ///// <param name="initialUrl">the first page url</param>
-        ///// <param name="detailLinkUrlXPath">xpath of the detail link url value</param>
-        ///// <returns></returns>
-        //IEnumerable<ScrappedHtmlNode> GetDetailLinkUrls(string initialUrl, string detailLinkUrlXPath);
-
+    {        
         /// <summary>
         /// get list of urls on a given (first) page (e.g. links to detail page from the master page) and the following ones
         /// in a paging scenarios
